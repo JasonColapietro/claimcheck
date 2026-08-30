@@ -1,0 +1,16 @@
+{
+  "name": "claimcheck",
+  "version": "0.1.0",
+  "description": "Turn the promises on your privacy page into tests that fail the build.",
+  "type": "module",
+  "bin": { "claimcheck": "./bin/claimcheck.mjs" },
+  "exports": { ".": "./src/index.mjs" },
+  "files": ["bin", "src", "README.md", "LICENSE"],
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "check": "node bin/claimcheck.mjs"
+  },
+  "keywords": ["privacy", "compliance", "ci", "static-analysis", "localstorage", "kids"],
+  "license": "MIT"
+}
