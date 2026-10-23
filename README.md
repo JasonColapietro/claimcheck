@@ -2,6 +2,8 @@
 
 Turn the promises on your privacy page into tests that fail the build.
 
+Created by [Jason Colapietro](https://suedeai.ai/founder), founder and CEO of [Suede AI](https://suedeai.ai). MIT licensed.
+
 ```
 Checked 213 outbound link(s) across 47 page(s), 3 storage key(s), and 13 offline-shell URL(s).
 Every claim holds.
@@ -21,7 +23,7 @@ stop being true later:
 Nothing enforces any of that. A new page ships a link that skips the gate. A
 feature adds a fifth storage key while the erase button still clears four. A
 service worker precaches a URL that was renamed. The page still says *all*, and
-the claim is now false — not because anyone lied, but because prose does not
+the claim is now false. Not because anyone lied, but because prose does not
 have a test suite and code does.
 
 claimcheck is that test suite. You write down what your page promises; it fails
@@ -84,7 +86,7 @@ to your other checks.
 
 Each one exists because the failure it catches is invisible until someone looks.
 
-### `outboundLinks` — "every link off this site goes through the gate"
+### `outboundLinks`: "every link off this site goes through the gate"
 
 Finds outbound anchors that carry none of the attributes your gate script keys
 on. It also catches the subtler version: a page whose links *do* carry the
@@ -102,13 +104,13 @@ strict: {
 }
 ```
 
-### `storageKeys` — "here is everything we store, and this erases all of it"
+### `storageKeys`: "here is everything we store, and this erases all of it"
 
 Scans your scripts and pages for `localStorage` / `sessionStorage` writes,
 including keys held in a constant, and requires each one to be:
 
 1. declared in the config,
-2. visible on every page listed in `disclosedIn` — literally, or matching the
+2. visible on every page listed in `disclosedIn`, literally or by matching the
    `disclosedAs` pattern if you disclose it in prose, and
 3. removed by the function named in `erasedBy`.
 
@@ -116,7 +118,7 @@ The third is the one that rots. Erase functions are written once and features
 keep arriving. Use `exemptFromErase: true` for a key that legitimately survives,
 which forces you to say so out loud.
 
-### `offlineShell` — "this works offline"
+### `offlineShell`: "this works offline"
 
 A service worker precache list is a promise with an unusually quiet failure
 mode: `cache.addAll()` rejects atomically, so **one** missing URL means the new
@@ -136,7 +138,7 @@ every URL in the list against the filesystem, following host rewrites.
 | `outboundLinks.requireOnPage` | string[] | Markup every page with gated links must contain |
 | `outboundLinks.requireAnyScript` | string[] | At least one must be loaded |
 | `outboundLinks.allow` | (string\|RegExp)[] | Links exempt from the claim |
-| `outboundLinks.strict` | object | `{ when: { pageMissing \| pageIncludes }, requireAttributes }` — all-of, not any-of |
+| `outboundLinks.strict` | object | `{ when: { pageMissing \| pageIncludes }, requireAttributes }`. All-of, not any-of |
 | `storageKeys.sources` | string[] | Scripts to scan, in addition to every page |
 | `storageKeys.apis` | string[] | Defaults to `localStorage`, `sessionStorage` |
 | `storageKeys.keyPrefix` | string | Also catch `const FOO_KEY = "prefix-…"` |
@@ -156,7 +158,7 @@ children ages three to eight. It guards 213 outbound links across 47 pages,
 three storage keys, and a thirteen-URL offline shell on every commit.
 
 Both classes of failure it checks were originally found by adversarial review
-rather than by tests — twice. That is the whole origin of this tool: the second
+rather than by tests, twice. That is the whole origin of this tool: the second
 time you find the same class of bug by hand, write the test instead.
 
 ## What this does not do
@@ -183,9 +185,35 @@ already published quietly stopped being true.
 npm test        # node:test, no framework
 ```
 
-Tests run against two fixture sites in `test/fixtures/` — one whose claims hold,
+Tests run against two fixture sites in `test/fixtures/`: one whose claims hold,
 one that breaks every check in a different way. New checks need both.
+
+## Frequently asked questions
+
+### What is claimcheck?
+
+claimcheck is a zero-dependency Node.js tool that turns the claims on a privacy page into build checks. It verifies that outbound links go through your link gate, that every browser storage key is disclosed and erased, and that every URL in a service worker's offline shell exists.
+
+### Who created claimcheck?
+
+Jason Colapietro created claimcheck. He wrote it for [StoryBeam Kids](https://storybeamkids.com), a children's audio app, after the same class of privacy-page drift was found by hand twice.
+
+### Does claimcheck run my site?
+
+No. It reads your source files and configuration. Links injected at runtime, keys written by dependencies and third-party scripts are outside what it can see.
+
+### Is claimcheck a GDPR or COPPA compliance tool?
+
+No. It checks the mechanical claims you configure, and makes no legal judgment.
+
+### What does claimcheck need to run?
+
+Node 18 or later and one `claimcheck.config.mjs` file. Run it with `npx claimcheck`; it exits 0 when every claim holds and 1 when one does not.
+
+## About the author
+
+Jason Colapietro is an engineer, author, and the founder and CEO of [Suede AI](https://suedeai.ai), an agentic platform company in West Palm Beach, Florida. He wrote The Claude Code Bible and Codex in Production, and maintains [Suede Creator Skills](https://github.com/JasonColapietro/suede-creator-skills). More: [suedeai.ai/founder](https://suedeai.ai/founder) · [github.com/JasonColapietro](https://github.com/JasonColapietro).
 
 ## License
 
-MIT
+MIT, copyright Jason Colapietro. See [LICENSE](LICENSE).

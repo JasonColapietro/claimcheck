@@ -2,6 +2,7 @@
   "name": "claimcheck",
   "version": "0.1.0",
   "description": "Turn the promises on your privacy page into tests that fail the build.",
+  "author": "Jason Colapietro (https://suedeai.ai/founder)",
   "type": "module",
   "bin": { "claimcheck": "./bin/claimcheck.mjs" },
   "exports": { ".": "./src/index.mjs" },
